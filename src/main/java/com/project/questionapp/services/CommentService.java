@@ -5,6 +5,7 @@ import com.project.questionapp.entities.Post;
 import com.project.questionapp.entities.User;
 import com.project.questionapp.repos.CommentRepository;
 import com.project.questionapp.requests.CommentCreateRequest;
+import com.project.questionapp.requests.CommentUpdateRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class CommentService {
         } else if (postId.isPresent()) {
             return commentRepository.findByPostId(postId.get());
         } else {
-            return null;
+           return commentRepository.findAll();
         }
     }
 
@@ -62,4 +63,12 @@ public class CommentService {
     }
 
 
+    public Comment updateComment(long commentId, CommentUpdateRequest commentUpdateRequest) {
+        Comment comment=getCommentById(commentId);
+        if(comment!=null){
+            comment.setText(commentUpdateRequest.getText());
+            return commentRepository.save(comment);
+        }
+        return null;
+    }
 }

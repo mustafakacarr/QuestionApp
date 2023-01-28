@@ -2,6 +2,7 @@ package com.project.questionapp.controllers;
 
 import com.project.questionapp.entities.Comment;
 import com.project.questionapp.requests.CommentCreateRequest;
+import com.project.questionapp.requests.CommentUpdateRequest;
 import com.project.questionapp.services.CommentService;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,10 @@ public class CommentController {
     public Comment getCommentById(@PathVariable long commentId) {
         return commentService.getCommentById(commentId);
     }
-    //  @PutMapping
+    @PutMapping(path = "/{commentId}")
+    public Comment updateComment(@PathVariable long commentId,@RequestBody CommentUpdateRequest commentUpdateRequest){
+        return commentService.updateComment(commentId,commentUpdateRequest);
+    }
 
 
     @DeleteMapping(path = "/{commentId}")
