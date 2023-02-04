@@ -5,10 +5,13 @@ import com.project.questionapp.entities.Post;
 import com.project.questionapp.entities.User;
 import com.project.questionapp.repos.LikeRepository;
 import com.project.questionapp.requests.LikeCreateRequest;
+import com.project.questionapp.responses.CommentResponse;
+import com.project.questionapp.responses.LikeResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class LikeService {
@@ -22,24 +25,24 @@ public class LikeService {
         this.postService = postService;
     }
 
-    public List<Like> getAllLikes(Optional<Long> userId, Optional<Long> postId) {
+    public List<LikeResponse> getAllLikes(Optional<Long> userId, Optional<Long> postId) {
+       List<Like> list;
         if (userId.isPresent() && postId.isPresent()) {
-            return likeRepository.findByUserIdAndPostId(userId.get(), postId.get());
+             list=likeRepository.findByUserIdAndPostId(userId.get(), postId.get());
         } else if (userId.isPresent()) {
-            return likeRepository.findByUserId(userId.get());
+             list=likeRepository.findByUserId(userId.get());
         } else if (postId.isPresent()) {
-            return likeRepository.findByPostId(postId.get());
+            list=likeRepository.findByPostId(postId.get());
         } else {
-            return likeRepository.findAll();
+            list= likeRepository.findAll();
         }
+        return list.stream().map(p-> new LikeResponse(p)).collect(Collectors.toList());
     }
 
 
     public Like likeOnPost(LikeCreateRequest newLike) {
         User user = userService.findUserById(newLike.getUserId());
         Post post = postService.findPost(newLike.getPostId());
-        System.out.println(user.getId());
-        System.out.println(post.getId());
         if (user != null && post != null) {
             Like toLike = new Like();
             toLike.setId(newLike.getId());

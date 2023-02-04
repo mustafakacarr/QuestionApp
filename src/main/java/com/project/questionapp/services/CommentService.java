@@ -6,10 +6,12 @@ import com.project.questionapp.entities.User;
 import com.project.questionapp.repos.CommentRepository;
 import com.project.questionapp.requests.CommentCreateRequest;
 import com.project.questionapp.requests.CommentUpdateRequest;
+import com.project.questionapp.responses.CommentResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
@@ -23,16 +25,18 @@ public class CommentService {
         this.userService = userService;
     }
 
-    public List<Comment> getAllComments(Optional<Long> userId, Optional<Long> postId) {
+    public List<CommentResponse> getAllComments(Optional<Long> userId, Optional<Long> postId) {
+        List<Comment> list;
         if (userId.isPresent() && postId.isPresent()) {
-            return commentRepository.findByUserIdAndPostId(userId.get(), postId.get());
+            list=commentRepository.findByUserIdAndPostId(userId.get(), postId.get());
         } else if (userId.isPresent()) {
-            return commentRepository.findByUserId(userId.get());
+            list=commentRepository.findByUserId(userId.get());
         } else if (postId.isPresent()) {
-            return commentRepository.findByPostId(postId.get());
+            list=commentRepository.findByPostId(postId.get());
         } else {
-           return commentRepository.findAll();
+          list=commentRepository.findAll();
         }
+        return list.stream().map(p-> new CommentResponse(p)).collect(Collectors.toList());
     }
 
     public Comment getCommentById(long commentId) {
