@@ -1,5 +1,7 @@
 # QuestionApp 
 
+#This project has been abandoned. Will remove as soon 
+
 QuestionApp project is provide users to basically ask question and comment on the questions asked.
 Also contains like on question and user registration system.
 
